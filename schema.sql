@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS findings (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  company_name VARCHAR(120) NOT NULL,
+  title VARCHAR(200) NOT NULL,
+  status VARCHAR(40) NOT NULL,
+  summary TEXT NOT NULL,
+  created_at DATETIME NOT NULL
+);

@@ -1,0 +1,12 @@
+.inline-display {
+  padding: 6px 8px;
+  border: 1px dashed #cfd4da;
+  border-radius: 6px;
+  cursor: pointer;
+  background: #ffffff;
+  min-height: 38px;
+}
+
+.inline-display:hover {
+  background: #f8f9fa;
+}
