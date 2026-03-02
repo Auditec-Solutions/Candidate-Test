@@ -54,16 +54,16 @@ $findings = [
             <?php foreach ($findings as $finding): ?>
               <tr>
                 <td>
-                  <inline-edit data-id="<?php echo $finding['id']; ?>" data-field="company_name" data-type="text" data-value="<?php echo htmlspecialchars($finding['company_name']); ?>"></inline-edit>
+                  <?php echo htmlspecialchars($finding['company_name']); ?>
                 </td>
                 <td>
-                  <inline-edit data-id="<?php echo $finding['id']; ?>" data-field="title" data-type="text" data-value="<?php echo htmlspecialchars($finding['title']); ?>"></inline-edit>
+                    <?php echo htmlspecialchars($finding['title']); ?>
                 </td>
                 <td>
-                  <status-select data-id="<?php echo $finding['id']; ?>" data-field="status" data-value="<?php echo htmlspecialchars($finding['status']); ?>"></status-select>
+                  <?php echo htmlspecialchars($finding['status']); ?>
                 </td>
                 <td>
-                  <inline-edit data-id="<?php echo $finding['id']; ?>" data-field="summary" data-type="textarea" data-maxlength="500" data-value="<?php echo htmlspecialchars($finding['summary'] ?? ''); ?>"></inline-edit>
+                    <?php echo htmlspecialchars($finding['summary']); ?>
                 </td>
                 <td><?php echo htmlspecialchars($finding['created_at']); ?></td>
               </tr>
@@ -74,6 +74,6 @@ $findings = [
     </div>
   </div>
 
-  <script src="assets/js/inline-edit-completed.js"></script>
+  <script src="assets/js/inline-edit.js"></script>
 </body>
 </html>
