@@ -28,7 +28,6 @@ You are given a working codebase. Your goal is to add inline editing to the find
 
 - Vanilla PHP + JavaScript
 - Bootstrap is OK
-- Keep it small and reasonable
 
 ### Deliverable
 

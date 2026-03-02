@@ -1,0 +1,77 @@
+SE2 Interview Questions
+-----
+- Core Engineering
+1. Refactoring Legacy Code with Limited or No Test Coverage
+Describe a real example where you refactored legacy production code that had little or no test coverage.
+How did you create safety before making changes?
+Where did you add tests first, and why?
+How did you avoid expanding the scope unnecessarily?
+How did you determine when to stop refactoring?
+
+
+2. Concurrency or Race Condition Experience
+Describe a time you encountered a concurrency issue or race condition.
+How did you detect it?
+What was the root cause?
+How did you resolve it?
+What guardrails or safeguards did you introduce afterward?
+
+
+- Backend Engineering (CRUD-Focused)
+3. Idempotency in Practice
+Using a typical create or update API endpoint as an example:
+How would you make the endpoint idempotent?
+What can go wrong with retries or double submissions?
+How would you handle idempotency across frontend and backend layers?
+
+
+4. Investigating Production 500 Errors
+Suppose you observe a spike in HTTP 500 errors after a deployment.
+What would you check first?
+Would you immediately roll back? Why or why not?
+How would you narrow the blast radius?
+What would you implement to prevent similar issues in the future?
+
+
+- Testing Strategy
+5. Testing a Typical CRUD Endpoint
+For a standard create/update endpoint:
+What would you unit test?
+What would you integration test?
+Would you mock the database? Why or why not?
+How do you prevent flaky tests?
+What is not worth testing?
+
+
+- Frontend Engineering (Optional if Time-Constrained)
+6. Diagnosing Slow Initial Page Load
+If a page has a slow initial load:
+How would you determine where the time is being spent?
+What are common causes in real-world applications?
+What are some quick wins versus deeper architectural improvements?
+Note: This question may be optional if the live exercise sufficiently covers frontend reasoning.
+
+- Ownership and Project Clarity (Select One)
+7. Handling Ambiguous Requirements
+When product requirements are incomplete or unclear:
+How do you drive clarity?
+How do you define acceptance criteria?
+How do you minimize rework?
+
+OR
+8. Balancing Technical Debt and Delivery
+How do you decide when refactoring is justified?
+How do you communicate tradeoffs to stakeholders?
+
+- Self-Awareness Signal (1–2 Minutes)
+9. Growth Area
+What do you consider your weakest area as an engineer today, and what are you doing to improve it?
+
+- Live Technical Exercise (20 Minutes)
+Implement Click-to-Edit and Save Functionality for Table Cells
+Candidates will implement click-to-edit functionality for table cells, including saving updates.
+
+- Mid-Exercise Change:
+Introduce a new requirement:
+Add optimistic updates with rollback on failure.
+Observe how the candidate adapts, restructures state management, and handles error flows.

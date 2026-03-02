@@ -24,7 +24,15 @@ class InlineEdit extends HTMLElement {
     const display = document.createElement('div');
     display.className = 'inline-display';
     display.textContent = this.value || '(empty)';
+    display.setAttribute('role', 'button');
+    display.setAttribute('tabindex', '0');
     display.addEventListener('click', () => this.renderEditor());
+    display.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        this.renderEditor();
+      }
+    });
     this.appendChild(display);
   }
 
@@ -53,6 +61,22 @@ class InlineEdit extends HTMLElement {
 
     saveBtn.addEventListener('click', () => this.handleSave(input.value));
     cancelBtn.addEventListener('click', () => this.renderDisplay());
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        this.renderDisplay();
+        return;
+      }
+      if (this.type !== 'textarea' && event.key === 'Enter') {
+        event.preventDefault();
+        this.handleSave(input.value);
+        return;
+      }
+      if (this.type === 'textarea' && event.key === 'Enter' && event.ctrlKey) {
+        event.preventDefault();
+        this.handleSave(input.value);
+      }
+    });
 
     actions.appendChild(saveBtn);
     actions.appendChild(cancelBtn);
@@ -68,6 +92,10 @@ class InlineEdit extends HTMLElement {
    * @returns {Promise<void>}
    */
   async handleSave(nextValue) {
+    if (this.isSaving) {
+      return;
+    }
+
     const trimmed = (nextValue || '').trim();
     const max = this.maxlength ? parseInt(this.maxlength, 10) : null;
 
@@ -82,6 +110,7 @@ class InlineEdit extends HTMLElement {
 
     const payload = { id: this.id, field: this.field, value: trimmed };
 
+    this.isSaving = true;
     try {
       const res = await fetch('api/update_finding.php', {
         method: 'POST',
@@ -98,6 +127,8 @@ class InlineEdit extends HTMLElement {
       showStatus('Saved.', false);
     } catch (err) {
       showStatus('Save failed.', true);
+    } finally {
+      this.isSaving = false;
     }
   }
 }
@@ -127,7 +158,15 @@ class StatusSelect extends HTMLElement {
     const display = document.createElement('div');
     display.className = 'inline-display';
     display.textContent = this.value || '(empty)';
+    display.setAttribute('role', 'button');
+    display.setAttribute('tabindex', '0');
     display.addEventListener('click', () => this.renderEditor());
+    display.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        this.renderEditor();
+      }
+    });
     this.appendChild(display);
   }
 
@@ -158,6 +197,17 @@ class StatusSelect extends HTMLElement {
 
     saveBtn.addEventListener('click', () => this.handleSave(select.value));
     cancelBtn.addEventListener('click', () => this.renderDisplay());
+    select.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        this.renderDisplay();
+        return;
+      }
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        this.handleSave(select.value);
+      }
+    });
 
     actions.appendChild(saveBtn);
     actions.appendChild(cancelBtn);
@@ -173,6 +223,10 @@ class StatusSelect extends HTMLElement {
    * @returns {Promise<void>}
    */
   async handleSave(nextValue) {
+    if (this.isSaving) {
+      return;
+    }
+
     const trimmed = (nextValue || '').trim();
     if (!trimmed) {
       showStatus('Value cannot be empty.', true);
@@ -181,6 +235,7 @@ class StatusSelect extends HTMLElement {
 
     const payload = { id: this.id, field: this.field, value: trimmed };
 
+    this.isSaving = true;
     try {
       const res = await fetch('api/update_finding.php', {
         method: 'POST',
@@ -197,6 +252,8 @@ class StatusSelect extends HTMLElement {
       showStatus('Saved.', false);
     } catch (err) {
       showStatus('Save failed.', true);
+    } finally {
+      this.isSaving = false;
     }
   }
 }
@@ -211,7 +268,8 @@ function showStatus(message, isError) {
   if (!el) {
     return;
   }
-  el.textContent = message;
+  // Message and time
+  el.textContent = message + ' (' + new Date().toLocaleTimeString() + ')';
   el.className = isError ? 'text-danger small' : 'text-success small';
 }
 

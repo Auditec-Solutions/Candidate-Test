@@ -1,0 +1,46 @@
+
+- Core Engineering
+Describe a time when you improved a piece of production code? What changes did you make and why?
+In what situations would you choose composition over inheritance? Please explain your reasoning.
+How do you approach refactoring legacy code? 
+. How do you avoid regressions? When do you stop refactoring?
+Have you ever encountered a concurrency issue? How did you identify and resolve it?
+
+- Backend Engineering
+Discuss a simple API for file uploads. What edge cases and failure scenarios would you consider?
+How would you make an API endpoint idempotent? Why is idempotency important?
+If you observe an increase in HTTP 500 errors in production with limited context, how would you investigate and triage the issue?
+
+- Frontend Engineering
+How would you diagnose and resolve a slow initial page load?
+
+- Databases
+A database query is performing poorly. What steps would you take to diagnose the issue before adding an index?
+Can you explain database transaction isolation levels and provide an example of when the choice of isolation level materially impacts system behavior?
+How would you model and scale a many-to-many relationship in a relational database?
+
+- Observability and Debugging
+When would you use logs, metrics, or distributed tracing? How do they complement each other?
+What is your process for investigating a production bug that you cannot reproduce locally?
+
+- Security
+Tell me about common web application vulnerabilities, and what practices you would implement to prevent them?
+Can you explain the difference between authentication and authorization?
+
+- Testing
+What do you unit test vs integration test vs end-to-end test?
+
+- Mentorship
+How do you review code from junior engineers?
+
+- System Design
+When would a service becomes CPU-bound vs IO-bound?
+
+- Project Management and Stakeholder Interactions:
+How do you handle conflicting requirements from different business stakeholders who each have strong but competing priorities?
+When product requirements are ambiguous or incomplete, how do you drive clarity and move the project forward?
+How do you estimate and communicate timelines when there is significant technical uncertainty?
+Describe a time when you had to push back on a feature request. How did you communicate the trade-offs and reach alignment?
+
+- End question
+What part of engineering do you think you’re weakest at right now?

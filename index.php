@@ -70,7 +70,6 @@ $findings = [
             <?php endforeach; ?>
           </tbody>
         </table>
-        <div id="save-status" class="small"></div>
       </div>
     </div>
   </div>
