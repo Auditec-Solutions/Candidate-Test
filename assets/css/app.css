@@ -10,3 +10,21 @@
 .inline-display:hover {
   background: #f8f9fa;
 }
+
+.inline-editor .form-control,
+.inline-editor .form-select {
+  min-height: 38px;
+}
+
+.inline-message {
+  font-size: 0.85rem;
+  min-height: 1.2rem;
+}
+
+.inline-message-success {
+  color: #198754;
+}
+
+.inline-message-error {
+  color: #dc3545;
+}

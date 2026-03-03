@@ -54,16 +54,36 @@ $findings = [
             <?php foreach ($findings as $finding): ?>
               <tr>
                 <td>
-                  <?php echo htmlspecialchars($finding['company_name']); ?>
+                  <inline-edit
+                    data-id="<?php echo htmlspecialchars($finding['id']); ?>"
+                    data-field="company_name"
+                    data-type="text"
+                    data-value="<?php echo htmlspecialchars($finding['company_name']); ?>"
+                  ></inline-edit>
                 </td>
                 <td>
-                    <?php echo htmlspecialchars($finding['title']); ?>
+                  <inline-edit
+                    data-id="<?php echo htmlspecialchars($finding['id']); ?>"
+                    data-field="title"
+                    data-type="text"
+                    data-value="<?php echo htmlspecialchars($finding['title']); ?>"
+                  ></inline-edit>
                 </td>
                 <td>
-                  <?php echo htmlspecialchars($finding['status']); ?>
+                  <status-select
+                    data-id="<?php echo htmlspecialchars($finding['id']); ?>"
+                    data-field="status"
+                    data-value="<?php echo htmlspecialchars($finding['status']); ?>"
+                  ></status-select>
                 </td>
                 <td>
-                    <?php echo htmlspecialchars($finding['summary']); ?>
+                  <inline-edit
+                    data-id="<?php echo htmlspecialchars($finding['id']); ?>"
+                    data-field="summary"
+                    data-type="textarea"
+                    data-maxlength="500"
+                    data-value="<?php echo htmlspecialchars($finding['summary']); ?>"
+                  ></inline-edit>
                 </td>
                 <td><?php echo htmlspecialchars($finding['created_at']); ?></td>
               </tr>
