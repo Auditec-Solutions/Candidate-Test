@@ -197,7 +197,7 @@ class StatusSelect extends HTMLElement {
         this.options = ['Open', 'Investigating', 'Closed'];
         this.messageTimeout = null;
         this.renderDisplay();
-
+    }
 
     renderDisplay() {
         this.innerHTML = '';
@@ -351,7 +351,6 @@ class StatusSelect extends HTMLElement {
     }
     }
 
-}
 
 customElements.define('inline-edit', InlineEdit);
 customElements.define('status-select', StatusSelect);
