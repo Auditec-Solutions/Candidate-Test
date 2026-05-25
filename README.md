@@ -1,27 +1,36 @@
 # Findings App
 
-php/sqlite demo app with fetch-driven list and detail pages for findings, companies, and contacts.
+Php/sqlite demo app with fetch-driven list and detail pages for findings, companies, and contacts for candidates to extend off of.
 
 ## run locally
 
-1. initialize the database:
+1a. If using Windows:
 
-	```bash
-	mkdir -p data
-	sqlite3 data/app.db < schema.sql
-	sqlite3 data/app.db < seed.sql
+Ensure that the latest C++ redist is installed:
+https://aka.ms/vc14/vc_redist.x64.exe
+
+Use the included PHP executable to start the server.
+
+	```powershell
+	.\php\php.exe -S 127.0.0.1:8099 -t .
 	```
 
-2. start the php server from the project root:
+1b. If using Linux, install PHP from the store and then run it. For Debian, that's:
 
 	```bash
-	php -S 127.0.0.1:8088 -t .
+	sudo apt install php php-sqlite3 php-mbstring
 	```
 
-3. open the app:
+Then run the server.
+
+	```bash
+	php -S 127.0.0.1:8099 -t .
+	```
+
+2. Open the local application:
 
 	```text
-	http://127.0.0.1:8088/
+	http://127.0.0.1:8099/
 	```
 
 ## pages
@@ -44,3 +53,7 @@ php/sqlite demo app with fetch-driven list and detail pages for findings, compan
 - `POST /api/update_finding.php`
 - `POST /api/update_company.php`
 - `POST /api/update_contact.php`
+
+## Other
+
+To restore the database, re-checkout or hard reset the 'app.db'.
