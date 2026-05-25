@@ -50,6 +50,7 @@ Then run the server.
 - `GET /api/companies.php?id=1`
 - `GET /api/contacts.php`
 - `GET /api/contacts.php?id=1`
+- `POST /api/add_finding.php` with `company_id` or case-insensitive `company_name`
 - `POST /api/update_finding.php`
 - `POST /api/update_company.php`
 - `POST /api/update_contact.php`

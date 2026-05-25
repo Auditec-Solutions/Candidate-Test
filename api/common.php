@@ -112,6 +112,31 @@ function api_payload_string(array $payload, string $key, string $message): strin
     return $trimmed;
 }
 
+function api_validate_field_value(array $fieldConfig, string $value): void
+{
+    $maxLength = (int) ($fieldConfig['maxLength'] ?? 255);
+
+    if (mb_strlen($value) > $maxLength) {
+        api_error_response('Value is too long.', 400);
+    }
+
+    $allowedValues = $fieldConfig['allowedValues'] ?? null;
+
+    if (is_array($allowedValues) && !in_array($value, $allowedValues, true)) {
+        api_error_response('Invalid value.', 400);
+    }
+
+    $validation = $fieldConfig['validation'] ?? null;
+
+    if ($validation === 'email' && filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
+        api_error_response('Invalid email address.', 400);
+    }
+
+    if ($validation === 'url' && filter_var($value, FILTER_VALIDATE_URL) === false) {
+        api_error_response('Invalid URL.', 400);
+    }
+}
+
 function api_update_entity(
     string $table,
     array $allowedFields,
@@ -130,27 +155,7 @@ function api_update_entity(
         }
 
         $fieldConfig = $allowedFields[$field];
-        $maxLength = (int) ($fieldConfig['maxLength'] ?? 255);
-
-        if (mb_strlen($value) > $maxLength) {
-            api_error_response('Value is too long.', 400);
-        }
-
-        $allowedValues = $fieldConfig['allowedValues'] ?? null;
-
-        if (is_array($allowedValues) && !in_array($value, $allowedValues, true)) {
-            api_error_response('Invalid value.', 400);
-        }
-
-        $validation = $fieldConfig['validation'] ?? null;
-
-        if ($validation === 'email' && filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
-            api_error_response('Invalid email address.', 400);
-        }
-
-        if ($validation === 'url' && filter_var($value, FILTER_VALIDATE_URL) === false) {
-            api_error_response('Invalid URL.', 400);
-        }
+        api_validate_field_value($fieldConfig, $value);
 
         $statement = app_db()->prepare(
             sprintf('UPDATE %s SET %s = :value WHERE id = :id', $table, $fieldConfig['column'])
