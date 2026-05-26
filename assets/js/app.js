@@ -19,6 +19,10 @@ const statusClassMap = {
     Closed: 'status-pill status-pill--closed',
 };
 
+// Flags to track the state of adding and saving findings
+let isAddingFinding = false;
+let isSavingFinding = false;
+
 initPage();
 
 async function initPage() {
@@ -53,23 +57,208 @@ async function renderFindingsListPage() {
               <h2 class="h4 mb-1">Open and historical findings</h2>
               <p class="text-secondary mb-0">Each row includes the company's first recorded contact.</p>
             </div>
-            <span class="surface-card__count">${findings.length} total</span>
+            <div>
+              <button
+                type="button"
+                id="add-finding-button"
+                class="btn btn-sm btn-primary"
+                ${isAddingFinding || isSavingFinding ? 'disabled' : ''}
+              >
+                Add Finding
+              </button>
+              <span class="surface-card__count">${findings.length} total</span>
+            </div>
           </div>
           ${renderTable(
-              ['Company', 'First Contact', 'Title', 'Status', 'Summary', 'Created'],
-              findings.map((finding) => `
-                <tr>
-                  <td>${renderLink(`company.php?id=${finding.company_id}`, finding.company_name)}</td>
-                  <td>${finding.contact_id ? renderLink(`contact.php?id=${finding.contact_id}`, finding.contact_name) : '<span class="text-secondary">No contact</span>'}</td>
-                  <td>${renderLink(`finding.php?id=${finding.id}`, finding.title)}</td>
-                  <td>${renderStatus(finding.status)}</td>
-                  <td>${escapeHtml(finding.summary)}</td>
-                  <td>${formatDate(finding.created_at)}</td>
-                </tr>
-              `).join('')
+            ['Company', 'First Contact', 'Title', 'Status', 'Summary', 'Created'],
+            `${isAddingFinding ? renderNewFindingRow() : ''}${findings.map(renderFindingRow).join('')}`
           )}
         </section>
     `;
+
+    attachFindingAddHandlers();
+}
+
+function getNewFindingPayload() {
+  const companyId = document.querySelector('#new-finding-company-id')?.value.trim();
+  const title = document.querySelector('#new-finding-title')?.value.trim();
+  const summary = document.querySelector('#new-finding-summary')?.value.trim();
+
+  return {
+    company_id: companyId,
+    title,
+    summary,
+    status: 'Open',
+  };
+}
+
+function validateNewFinding(payload) {
+  if (!payload.company_id) {
+    return 'Company ID is required.';
+  }
+
+  const companyId = Number(payload.company_id);
+
+  if (!Number.isInteger(companyId) || companyId <= 0) {
+    return 'Company ID must be a positive number.';
+  }
+
+  if (!payload.title) {
+    return 'Title is required.';
+  }
+
+  if (!payload.summary) {
+    return 'Summary is required.';
+  }
+
+  return '';
+}
+
+function setNewFindingError(message) {
+  const errorContainer = document.querySelector('#new-finding-error');
+
+  if (errorContainer) {
+    errorContainer.textContent = message;
+  }
+}
+
+function attachFindingAddHandlers() {
+  const addButton = document.querySelector('#add-finding-button');
+
+  if (addButton) {
+    addButton.addEventListener('click', async () => {
+      isAddingFinding = true;
+      await renderFindingsListPage();
+
+      document.querySelector('#new-finding-company-id')?.focus();
+    });
+  }
+
+  const cancelButton = document.querySelector('#cancel-new-finding');
+
+  if (cancelButton) {
+    cancelButton.addEventListener('click', async () => {
+      isAddingFinding = false;
+      isSavingFinding = false;
+      await renderFindingsListPage();
+    });
+  }
+
+  const saveButton = document.querySelector('#save-new-finding');
+
+  if (saveButton) {
+    saveButton.addEventListener('click', async () => {
+      const payload = getNewFindingPayload();
+      const validationError = validateNewFinding(payload);
+  
+      if (validationError) {
+        setNewFindingError(validationError);
+        return;
+      }
+  
+      setNewFindingError('');
+  
+      payload.company_id = Number(payload.company_id);
+  
+      const cancelButton = document.querySelector('#cancel-new-finding');
+      const inputs = document.querySelectorAll('.new-finding-row input');
+  
+      saveButton.disabled = true;
+      saveButton.textContent = 'Saving...';
+  
+      if (cancelButton) {
+        cancelButton.disabled = true;
+      }
+  
+      inputs.forEach((input) => {
+        input.disabled = true;
+      });
+  
+      try {
+        await postJson('api/add_finding.php', payload);
+  
+        isAddingFinding = false;
+        isSavingFinding = false;
+  
+        await renderFindingsListPage();
+      } catch (error) {
+        saveButton.disabled = false;
+        saveButton.textContent = 'Save';
+  
+        if (cancelButton) {
+          cancelButton.disabled = false;
+        }
+  
+        inputs.forEach((input) => {
+          input.disabled = false;
+        });
+  
+        setNewFindingError(error.message || 'Finding could not be added.');
+      }
+    });
+  }
+}
+
+function renderFindingRow(finding) {
+  return `
+    <tr>
+      <td>${renderLink(`company.php?id=${finding.company_id}`, finding.company_name)}</td>
+      <td>${finding.contact_id ? renderLink(`contact.php?id=${finding.contact_id}`, finding.contact_name) : '<span class="text-secondary">No contact</span>'}</td>
+      <td>${renderLink(`finding.php?id=${finding.id}`, finding.title)}</td>
+      <td>${renderStatus(finding.status)}</td>
+      <td>${escapeHtml(finding.summary)}</td>
+      <td>${formatDate(finding.created_at)}</td>
+    </tr>
+  `;
+}
+
+function renderNewFindingRow() {
+  return `
+    <tr class="new-finding-row">
+      <td>
+        <input
+          type="text"
+          id="new-finding-company-id"
+          class="form-control"
+          placeholder="Company ID"
+          ${isSavingFinding ? 'disabled' : ''}
+        >
+      </td>
+      <td>
+        <span class="text-secondary">Auto-filled after save</span>
+      </td>
+      <td>
+        <input
+          type="text"
+          id="new-finding-title"
+          class="form-control"
+          placeholder="Finding title"
+          ${isSavingFinding ? 'disabled' : ''}
+        >
+      </td>
+      <td>
+        ${renderStatus('Open')}
+      </td>
+      <td>
+        <input
+          type="text"
+          id="new-finding-summary"
+          class="form-control"
+          placeholder="Summary"
+          ${isSavingFinding ? 'disabled' : ''}
+        >
+        <div id="new-finding-error" class="text-danger mt-1"></div>
+      </td>
+      <td>
+        <button type="button" id="save-new-finding" class="btn btn-sm btn-primary" ${isSavingFinding ? 'disabled' : ''}>
+          ${isSavingFinding ? 'Saving...' : 'Save'}
+        </button>
+        <button type="button" id="cancel-new-finding" class="btn btn-sm btn-secondary" ${isSavingFinding ? 'disabled' : ''}>
+          Cancel
+        </button>
+      </td>
+    </tr>
+  `;
 }
 
 async function renderFindingDetailPage() {
