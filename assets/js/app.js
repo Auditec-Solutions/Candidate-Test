@@ -150,17 +150,51 @@ function attachFindingAddHandlers() {
     saveButton.addEventListener('click', async () => {
       const payload = getNewFindingPayload();
       const validationError = validateNewFinding(payload);
-
+  
       if (validationError) {
         setNewFindingError(validationError);
         return;
       }
-
+  
       setNewFindingError('');
-
+  
       payload.company_id = Number(payload.company_id);
-
-      console.log('New finding payload:', payload);
+  
+      const cancelButton = document.querySelector('#cancel-new-finding');
+      const inputs = document.querySelectorAll('.new-finding-row input');
+  
+      saveButton.disabled = true;
+      saveButton.textContent = 'Saving...';
+  
+      if (cancelButton) {
+        cancelButton.disabled = true;
+      }
+  
+      inputs.forEach((input) => {
+        input.disabled = true;
+      });
+  
+      try {
+        await postJson('api/add_finding.php', payload);
+  
+        isAddingFinding = false;
+        isSavingFinding = false;
+  
+        await renderFindingsListPage();
+      } catch (error) {
+        saveButton.disabled = false;
+        saveButton.textContent = 'Save';
+  
+        if (cancelButton) {
+          cancelButton.disabled = false;
+        }
+  
+        inputs.forEach((input) => {
+          input.disabled = false;
+        });
+  
+        setNewFindingError(error.message || 'Finding could not be added.');
+      }
     });
   }
 }
@@ -191,7 +225,7 @@ function renderNewFindingRow() {
         >
       </td>
       <td>
-        <span class="text-secondary">No contact</span>
+        <span class="text-secondary">Auto-filled after save</span>
       </td>
       <td>
         <input
